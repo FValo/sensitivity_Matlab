@@ -2,6 +2,7 @@ clear
 close
 clc
 
+% -_-
 % MIN X SENSITIVITà
 % questo codice permette di eseduire un'analisi di sensitività tramite
 % solutore NASTRAN, in particolare consideriamo un'analisi su 2 livelli
