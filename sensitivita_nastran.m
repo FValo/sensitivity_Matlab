@@ -1,4 +1,4 @@
-function [U, F, A, B, C] = sensitivita_nastran(nome_file,parametro,analisi)
+function [sol, matr_coeff, res] = sensitivita_nastran(nome_file,parametro,analisi)
 %--------------------------------------------------------------------------
 % INPUT
 % -) nome_file: nome del file bdf con cui lavorerà nastran, nome con cui
@@ -29,9 +29,12 @@ var_pc=10;   % variazione delle variabili di progetto
 run=1+run.*var_pc/100;
 
 % inizializzazione delle matrici contenenti i risultati
-U(:,:,1)=zeros(num_analisi,6);
-U(:,:,2)=zeros(num_analisi,6);
-F=zeros(num_analisi,analisi);
+if analisi == 0
+    U(:,:,1)=zeros(num_analisi,6);
+    U(:,:,2)=zeros(num_analisi,6);
+else
+    F=zeros(num_analisi,analisi);
+end
 
 
 for i=1:num_analisi
@@ -82,18 +85,24 @@ for i=1:num_analisi
        
 end
 
-%  if analisi ~= 0
-%         risultati=F(:,1);
-% else
-%     risultati=U(:,2,2);
-%  end
-% 
-%  A=1/4*(risultati(2)+risultati(4)+risultati(6)+risultati(8)-risultati(1)-risultati(3)-risultati(5)-risultati(7));
-%  B=1/4*(risultati(3)+risultati(4)+risultati(7)+risultati(8)-risultati(1)-risultati(2)-risultati(5)-risultati(6));
-%  C=1/4*(risultati(5)+risultati(6)+risultati(7)+risultati(8)-risultati(1)-risultati(2)-risultati(3)-risultati(4));
-%  
-A=0;
-B=0;
-C=0;
+
+if analisi == 0
+    sol=U;
+else
+    sol=F;
+end
+
+% Si determinano i coefficienti del modello approssimato che si vuole 
+% definire nella forma: y=bo+b1*x1+b2*x2+b3*x3+...
+matr_coeff=zeros(analisi,num_fattori+1);
+matr_coeff(:,1)=median(F);
+for i=1:num_fattori
+    matr_coeff(:,i+1)=1/2*median(run(:,i).*F);
+end
+
+% calcolo del residuo
+Y=run*matr_coeff(:,2:end)' + ones(size(run,1),1)*matr_coeff(:,1)';
+res=F-Y;
+
 
 end
