@@ -8,7 +8,7 @@ function [parametro] = modifica_parametro(parametro,run)
 % devono variare le variabili di progetto
 %------------------------------------------------------------------------
 % OUTPUT
-% struct parametro con prop
+% struct parametro con prop_mat modificate
 %------------------------------------------------------------------------
 
 num_fattori=length(find(parametro.fattori~=0));

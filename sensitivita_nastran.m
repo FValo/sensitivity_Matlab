@@ -25,7 +25,7 @@ num_livelli=2;
 num_analisi=num_livelli^num_fattori; % numero di combinazioni possibili
 
 [run] = combinazioni(num_fattori,num_livelli); % creazione matrice contenente le combinazioni su ogni riga
-var_pc=10;   % variazione delle variabili di progetto
+var_pc=3;   % variazione percentuale delle variabili di progetto
 run=1+run.*var_pc/100;
 
 % inizializzazione delle matrici contenenti i risultati
@@ -96,8 +96,9 @@ end
 % definire nella forma: y=bo+b1*x1+b2*x2+b3*x3+...
 matr_coeff=zeros(analisi,num_fattori+1);
 matr_coeff(:,1)=median(F);
+[run] = combinazioni(num_fattori,num_livelli);
 for i=1:num_fattori
-    matr_coeff(:,i+1)=1/2*median(run(:,i).*F);
+    matr_coeff(:,i+1)=median(run(:,i).*F);
 end
 
 % calcolo del residuo
